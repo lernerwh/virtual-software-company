@@ -1,0 +1,158 @@
+# 测试规范
+# Test Standards
+
+testing_pyramid:
+  unit_tests:
+    description: 单元测试
+    coverage_target: 80%
+    characteristics:
+      - 快速执行
+      - 隔离测试
+      - 测试单个函数/组件
+    scope:
+      - 纯函数
+      - Hooks
+      - 工具函数
+      - 组件渲染
+
+  integration_tests:
+    description: 集成测试
+    coverage_target: 60%
+    characteristics:
+      - 测试模块间交互
+      - 使用真实依赖或 Mock
+    scope:
+      - API 集成
+      - 数据库操作
+      - 组件交互
+
+  e2e_tests:
+    description: 端到端测试
+    coverage_target: 关键流程 100%
+    characteristics:
+      - 模拟真实用户行为
+      - 完整系统测试
+    scope:
+      - 用户登录流程
+      - 核心业务流程
+      - 支付流程
+
+test_structure:
+  pattern: AAA
+  description: Arrange-Act-Assert
+  example: |
+    // Arrange - 准备
+    const input = 'test';
+    const expected = 'TEST';
+
+    // Act - 执行
+    const result = toUpperCase(input);
+
+    // Assert - 断言
+    expect(result).toBe(expected);
+
+naming_conventions:
+  test_files:
+    pattern: "{filename}.test.{ext}"
+    example: "utils.test.ts, Button.test.tsx"
+
+  test_descriptions:
+    pattern: "should {expected behavior} when {condition}"
+    example: "should return true when input is valid"
+
+  describe_blocks:
+    pattern: "{function/component name}"
+    example: "describe('UserService', () => {...})"
+
+dt_tests:
+  description: 开发测试用例（Development Test）
+  purpose:
+    - TDD（测试驱动开发）
+    - 建立测试防护网
+    - 指导开发实现
+
+  focus_areas:
+    - 边界条件
+    - 异常处理
+    - 核心业务逻辑
+    - 状态转换
+
+  format:
+    - 测试用例 ID
+    - 测试描述
+    - 前置条件
+    - 输入数据
+    - 预期输出
+    - 后置条件
+
+acceptance_criteria:
+  description: 验收标准
+  format:
+    given: "Given [初始状态]"
+    when: "When [执行动作]"
+    then: "Then [预期结果]"
+
+  example: |
+    Given 用户已登录
+    When 用户点击"添加到购物车"
+    Then 商品应添加到购物车
+    And 购物车数量应增加 1
+
+test_data:
+  principles:
+    - 使用工厂函数创建测试数据
+    - 避免硬编码测试数据
+    - 保持测试数据独立性
+    - 使用 faker 生成随机数据
+
+  patterns:
+    builder: 使用 Builder 模式创建复杂对象
+    fixture: 使用 fixture 管理测试数据
+    factory: 使用工厂函数生成测试数据
+
+mocking:
+  when_to_mock:
+    - 外部 API 调用
+    - 数据库操作
+    - 时间相关操作
+    - 第三方服务
+
+  best_practices:
+    - 不 Mock 被测系统
+    - Mock 行为而非实现
+    - 验证 Mock 调用
+    - 保持 Mock 简单
+
+coverage:
+  metrics:
+    statements: 语句覆盖率
+    branches: 分支覆盖率
+    functions: 函数覆盖率
+    lines: 行覆盖率
+
+  thresholds:
+    excellent: ">= 90%"
+    good: ">= 80%"
+    acceptable: ">= 70%"
+    poor: "< 70%"
+
+  exclusions:
+    - 生成的代码
+    - 配置文件
+    - 类型定义文件
+
+test_report:
+  sections:
+    - 测试执行摘要
+    - 覆盖率报告
+    - 失败用例详情
+    - 性能指标
+    - 建议
+
+  format:
+    summary:
+      total_cases: 总用例数
+      passed: 通过数
+      failed: 失败数
+      skipped: 跳过数
+      duration: 执行时间

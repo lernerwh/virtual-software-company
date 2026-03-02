@@ -1,0 +1,176 @@
+# 架构模式库
+# Architecture Patterns Library
+
+version: "1.0"
+default_tech_stack: web
+
+tech_stacks:
+  web:
+    name: Web 技术栈
+    languages:
+      - TypeScript
+      - JavaScript
+    frameworks:
+      frontend:
+        - React
+        - Vue
+        - Angular
+      backend:
+        - Node.js
+        - Express
+        - NestJS
+    testing:
+      - Jest
+      - Vitest
+      - Cypress
+      - Playwright
+
+  android:
+    name: Android 技术栈
+    languages:
+      - Kotlin
+      - Java
+    frameworks:
+      - Jetpack Compose
+      - MVVM
+    testing:
+      - JUnit
+      - Espresso
+    status: reserved
+
+  harmonyos:
+    name: 鸿蒙技术栈
+    languages:
+      - ArkTS
+      - TypeScript
+    frameworks:
+      - ArkUI
+      - MVVM
+    testing:
+      - Hihiuma
+    status: reserved
+
+patterns:
+  frontend:
+    component_based:
+      name: 组件化架构
+      description: 将 UI 分解为可复用的组件
+      principles:
+        - 单一职责
+        - 可复用性
+        - 可组合性
+      structure:
+        - "components/ - 基础组件"
+        - "features/ - 功能模块"
+        - "layouts/ - 布局组件"
+        - "pages/ - 页面组件"
+
+    state_management:
+      name: 状态管理
+      patterns:
+        flux:
+          description: 单向数据流
+          components:
+            - Action
+            - Dispatcher
+            - Store
+            - View
+        redux:
+          description: 可预测的状态容器
+          components:
+            - Store
+            - Reducer
+            - Action
+            - Middleware
+        context_hooks:
+          description: React 内置状态管理
+          use_case: 中小型应用
+
+    design_patterns:
+      - name: Container/Presentational
+        description: 分离逻辑和展示
+      - name: HOC (Higher-Order Component)
+        description: 组件逻辑复用
+      - name: Custom Hooks
+        description: 逻辑复用和状态共享
+
+  backend:
+    layered:
+      name: 分层架构
+      layers:
+        - name: Controller
+          responsibility: 处理 HTTP 请求，参数验证
+        - name: Service
+          responsibility: 业务逻辑
+        - name: Repository
+          responsibility: 数据访问
+        - name: Model
+          responsibility: 数据模型
+
+    clean_architecture:
+      name: 清洁架构
+      principles:
+        - 独立于框架
+        - 可测试
+        - 独立于 UI
+        - 独立于数据库
+      layers:
+        - Entities
+        - Use Cases
+        - Interface Adapters
+        - Frameworks & Drivers
+
+    microservices:
+      name: 微服务架构
+      principles:
+        - 单一职责
+        - 独立部署
+        - 去中心化
+      patterns:
+        - API Gateway
+        - Service Discovery
+        - Circuit Breaker
+        - Event Sourcing
+
+  design_principles:
+    solid:
+      - name: Single Responsibility
+        description: 一个类只有一个引起它变化的原因
+      - name: Open/Closed
+        description: 对扩展开放，对修改关闭
+      - name: Liskov Substitution
+        description: 子类可以替换父类
+      - name: Interface Segregation
+        description: 接口要小而专一
+      - name: Dependency Inversion
+        description: 依赖抽象，不依赖具体
+
+    other:
+      - DRY (Don't Repeat Yourself)
+      - KISS (Keep It Simple, Stupid)
+      - YAGNI (You Aren't Gonna Need It)
+
+  project_structure:
+    web_standard:
+      description: 标准 Web 项目结构
+      directories:
+        - "src/components/ - UI 组件"
+        - "src/features/ - 功能模块"
+        - "src/hooks/ - 自定义 Hooks"
+        - "src/utils/ - 工具函数"
+        - "src/services/ - API 服务"
+        - "src/types/ - 类型定义"
+        - "src/constants/ - 常量"
+        - "src/styles/ - 样式文件"
+        - "src/assets/ - 静态资源"
+        - "tests/ - 测试文件"
+
+  best_practices:
+    - 使用依赖注入
+    - 接口隔离
+    - 配置外部化
+    - 日志规范
+    - 错误处理统一
+    - API 版本控制
+    - 缓存策略
+    - 安全最佳实践

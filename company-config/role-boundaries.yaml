@@ -1,0 +1,157 @@
+# 角色边界定义
+# Role Boundary Definitions
+
+roles:
+  pm:
+    name: 项目经理
+    slash_command: /pm
+    responsibilities:
+      - 接收并分析用户需求
+      - 输出项目规格说明
+      - 输出资源计划
+    allowed_inputs:
+      - 用户需求描述
+      - projects/{project-name}/01-requirements/
+    allowed_outputs:
+      - projects/{project-name}/01-requirements/project-spec.md
+      - projects/{project-name}/01-requirements/resource-plan.md
+    allowed_interactions:
+      - user
+      - architect
+    forbidden:
+      - 编写代码
+      - 设计架构
+      - 编写测试用例
+      - 修改技术决策
+
+  architect:
+    name: 架构设计师
+    slash_command: /architect
+    responsibilities:
+      - 根据项目规格输出软件规格
+      - 设计系统架构
+      - 进行技术选型
+      - 与测试经理协作制定验收标准
+    allowed_inputs:
+      - projects/{project-name}/01-requirements/
+      - company-config/architecture-patterns.yaml
+    allowed_outputs:
+      - projects/{project-name}/02-architecture/
+      - projects/{project-name}/03-acceptance/acceptance-criteria.md
+    allowed_interactions:
+      - pm
+      - dev-tester
+      - test-manager
+    forbidden:
+      - 编写业务代码
+      - 编写测试用例
+      - 修改需求
+      - 直接对接开发人员
+
+  dev-tester:
+    name: 开发测试人员
+    slash_command: /dev-tester
+    responsibilities:
+      - 在开发前设计DT测试用例（TDD）
+      - 建立测试防护网
+    allowed_inputs:
+      - projects/{project-name}/02-architecture/
+      - projects/{project-name}/03-acceptance/
+    allowed_outputs:
+      - projects/{project-name}/04-dt-tests/
+    allowed_interactions:
+      - architect
+    forbidden:
+      - 编写业务代码
+      - 修改架构设计
+      - 执行测试
+      - 修改需求
+
+  developer:
+    name: 开发人员
+    slash_command: /developer
+    responsibilities:
+      - 根据架构设计实现代码
+      - 自测DT用例
+      - 响应审核意见
+    allowed_inputs:
+      - projects/{project-name}/02-architecture/
+      - projects/{project-name}/04-dt-tests/
+      - projects/{project-name}/06-reviews/
+    allowed_outputs:
+      - projects/{project-name}/05-code/
+      - projects/{project-name}/06-reviews/review-status.yaml
+    allowed_interactions:
+      - architect
+      - reviewer
+      - dev-tester
+    forbidden:
+      - 修改需求
+      - 修改架构设计
+      - 修改DT测试用例
+      - 跳过审核直接合并
+
+  reviewer:
+    name: 审核人员
+    slash_command: /reviewer
+    responsibilities:
+      - 审核代码和测试用例
+      - 输出检视意见
+    allowed_inputs:
+      - projects/{project-name}/05-code/
+      - projects/{project-name}/04-dt-tests/
+      - company-config/code-standards.yaml
+    allowed_outputs:
+      - projects/{project-name}/06-reviews/review-records/
+      - projects/{project-name}/06-reviews/review-status.yaml
+    allowed_interactions:
+      - developer
+    forbidden:
+      - 编写代码
+      - 修改代码
+      - 修改需求
+      - 修改架构设计
+
+  test-manager:
+    name: 测试经理
+    slash_command: /test-manager
+    responsibilities:
+      - 与SE制定验收标准
+      - 设计测试计划
+      - 审核测试报告
+    allowed_inputs:
+      - projects/{project-name}/02-architecture/
+      - projects/{project-name}/03-acceptance/
+    allowed_outputs:
+      - projects/{project-name}/03-acceptance/acceptance-criteria.md
+      - projects/{project-name}/07-test-design/
+    allowed_interactions:
+      - architect
+      - tester
+    forbidden:
+      - 编写代码
+      - 执行测试
+      - 修改架构设计
+      - 编写详细测试用例
+
+  tester:
+    name: 测试人员
+    slash_command: /tester
+    responsibilities:
+      - 根据测试设计输出测试用例
+      - 执行测试
+      - 输出测试报告
+    allowed_inputs:
+      - projects/{project-name}/07-test-design/
+      - projects/{project-name}/05-code/
+    allowed_outputs:
+      - projects/{project-name}/08-test-cases/
+      - projects/{project-name}/09-reports/
+    allowed_interactions:
+      - test-manager
+      - developer
+    forbidden:
+      - 编写代码
+      - 修改代码
+      - 修改测试设计
+      - 修改需求

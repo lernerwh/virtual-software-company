@@ -1,0 +1,19 @@
+# 交接日志
+# Handover Log
+# 记录各阶段之间的工作交接
+
+version: "1.0"
+log: []
+
+# 日志条目格式示例:
+# - timestamp: "2025-01-15T10:30:00Z"
+#   from_stage: "1_requirements"
+#   to_stage: "2_architecture"
+#   from_role: "pm"
+#   to_role: "architect"
+#   project: "todo-app"
+#   deliverables:
+#     - "01-requirements/project-spec.md"
+#     - "01-requirements/resource-plan.md"
+#   notes: "需求分析完成，包含功能需求和性能要求"
+#   status: "completed"

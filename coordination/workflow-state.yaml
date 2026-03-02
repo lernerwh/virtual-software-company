@@ -1,0 +1,94 @@
+# 全局工作流状态
+# Global Workflow State
+
+current_project: null
+workflow_version: "1.0"
+
+stages:
+  1_requirements:
+    name: 需求分析
+    role: pm
+    slash_command: /pm
+    input_dir: null
+    output_dir: 01-requirements
+    status: pending
+    assignee: null
+
+  2_architecture:
+    name: 架构设计
+    role: architect
+    slash_command: /architect
+    input_dir: 01-requirements
+    output_dir: 02-architecture
+    status: pending
+    assignee: null
+
+  3a_dt_tests:
+    name: DT测试设计
+    role: dev-tester
+    slash_command: /dev-tester
+    input_dir: 02-architecture
+    output_dir: 04-dt-tests
+    status: pending
+    assignee: null
+
+  3b_test_design:
+    name: 测试计划设计
+    role: test-manager
+    slash_command: /test-manager
+    input_dir: 02-architecture
+    output_dir: 07-test-design
+    status: pending
+    assignee: null
+
+  4_development:
+    name: 代码开发
+    role: developer
+    slash_command: /developer
+    input_dir: 04-dt-tests
+    output_dir: 05-code
+    status: pending
+    assignee: null
+
+  5_review:
+    name: 代码审核
+    role: reviewer
+    slash_command: /reviewer
+    input_dir: 05-code
+    output_dir: 06-reviews
+    status: pending
+    assignee: null
+
+  6_testing:
+    name: 测试执行
+    role: tester
+    slash_command: /tester
+    input_dir: 07-test-design
+    output_dir: 08-test-cases,09-reports
+    status: pending
+    assignee: null
+
+status_values:
+  - pending
+  - in_progress
+  - completed
+  - blocked
+
+transitions:
+  1_requirements:
+    next: 2_architecture
+  2_architecture:
+    next:
+      - 3a_dt_tests
+      - 3b_test_design
+  3a_dt_tests:
+    next: 4_development
+  3b_test_design:
+    next: 6_testing
+  4_development:
+    next: 5_review
+  5_review:
+    on_pass: 6_testing
+    on_fail: 4_development
+  6_testing:
+    next: completed

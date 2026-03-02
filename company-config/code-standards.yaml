@@ -1,0 +1,127 @@
+# 代码规范
+# Code Standards
+# 综合了 Google、Airbnb、阿里巴巴等通用行业规范
+
+general:
+  principles:
+    - 代码应该清晰、简洁、易于理解
+    - 遵循 DRY 原则（Don't Repeat Yourself）
+    - 遵循 SOLID 原则
+    - 保持函数短小，单一职责
+    - 使用有意义的命名
+
+naming_conventions:
+  variables:
+    description: 使用 camelCase
+    example: "userName, totalPrice, isValid"
+
+  constants:
+    description: 使用 UPPER_SNAKE_CASE
+    example: "MAX_RETRY_COUNT, DEFAULT_TIMEOUT"
+
+  functions:
+    description: 使用 camelCase，动词开头
+    example: "getUserInfo, calculateTotal, validateInput"
+
+  classes:
+    description: 使用 PascalCase
+    example: "UserService, OrderController, DataValidator"
+
+  interfaces:
+    description: 使用 PascalCase，可以用 I 前缀
+    example: "IUserService, IRepository, ILogger"
+
+  files:
+    typescript: "kebab-case.ts"
+    react: "PascalCase.tsx"
+    styles: "kebab-case.css"
+
+typescript:
+  types:
+    - 始终为函数参数和返回值定义类型
+    - 避免使用 any，使用 unknown 代替
+    - 使用 interface 定义对象结构
+    - 使用 type 定义联合类型和交叉类型
+
+  async:
+    - 使用 async/await 代替 .then()
+    - 始终处理错误（try-catch）
+    - 使用 Promise<T> 作为异步返回类型
+
+  imports:
+    - 使用 ES6 import/export
+    - 按类型分组导入（外部库、内部模块、类型）
+    - 使用相对路径或别名，保持一致
+
+  best_practices:
+    - 使用 const/let，不使用 var
+    - 使用可选链操作符 (?.)
+    - 使用空值合并运算符 (??)
+    - 使用模板字符串
+
+react:
+  components:
+    - 使用函数组件和 Hooks
+    - 组件名使用 PascalCase
+    - Props 必须定义类型
+    - 保持组件单一职责
+
+  hooks:
+    - 使用 useCallback 缓存函数
+    - 使用 useMemo 缓存计算结果
+    - 自定义 Hook 以 use 开头
+
+  state_management:
+    - 简单状态使用 useState
+    - 复杂状态使用 useReducer
+    - 全局状态考虑使用 Context 或状态管理库
+
+nodejs:
+  error_handling:
+    - 始终处理错误
+    - 使用自定义错误类型
+    - 记录错误日志
+
+  api_design:
+    - RESTful API 遵循资源命名
+    - 使用合适的 HTTP 状态码
+    - 请求/响应使用统一的格式
+
+  security:
+    - 验证所有用户输入
+    - 使用参数化查询防止 SQL 注入
+    - 使用 helmet 等安全中间件
+    - 敏感信息使用环境变量
+
+comments:
+  when_to_comment:
+    - 复杂逻辑需要解释
+    - 公共 API 和接口
+    - 非显而易见的决策
+
+  when_not_to_comment:
+    - 代码本身已经清晰的
+    - 注释与代码重复的
+
+  format:
+    - 使用 JSDoc 格式
+    - 保持注释简洁
+    - 使用英文或中文，保持一致
+
+git:
+  commit_message:
+    format: "type(scope): description"
+    types:
+      - feat: 新功能
+      - fix: 修复 bug
+      - docs: 文档变更
+      - style: 代码格式（不影响代码运行的变动）
+      - refactor: 重构
+      - test: 测试相关
+      - chore: 构建过程或辅助工具的变动
+
+  branch_naming:
+    feature: "feature/description"
+    bugfix: "fix/description"
+    release: "release/version"
+    hotfix: "hotfix/description"
