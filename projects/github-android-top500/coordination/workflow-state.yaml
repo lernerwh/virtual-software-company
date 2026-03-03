@@ -1,0 +1,58 @@
+# 工作流状态
+
+project: github-android-top500
+current_stage: 3a_dt_tests
+overall_progress: 28%
+
+stages:
+  1_requirements:
+    progress: 100%
+    status: completed
+    owner: pm
+    completed_at: 2026-03-03T23:35:00
+    dependencies: []
+    outputs:
+      - 01-requirements/project-spec.md
+      - 01-requirements/resource-plan.md
+
+  2_architecture:
+    progress: 100%
+    status: completed
+    owner: architect
+    completed_at: 2026-03-03T23:40:00
+    dependencies: [1_requirements]
+    outputs:
+      - 02-architecture/software-spec.md
+      - 02-architecture/architecture.md
+      - 02-architecture/tech-stack.md
+      - 03-acceptance/acceptance-criteria.md
+
+  3a_dt_tests:
+    progress: 0%
+    status: pending
+    owner: dev-tester
+    dependencies: [2_architecture]
+
+  3b_test_design:
+    progress: 0%
+    status: pending
+    owner: test-manager
+    dependencies: [2_architecture]
+
+  4_development:
+    progress: 0%
+    status: blocked
+    owner: developer
+    dependencies: [3a_dt_tests]
+
+  5_review:
+    progress: 0%
+    status: blocked
+    owner: reviewer
+    dependencies: [4_development]
+
+  6_testing:
+    progress: 0%
+    status: blocked
+    owner: tester
+    dependencies: [5_review, 3b_test_design]
