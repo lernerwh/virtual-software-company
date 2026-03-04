@@ -3,7 +3,7 @@ project:
   name: github-android-top500
   description: "Web网站 - 自动爬取GitHub上star数量Top 500的Android开源项目信息和地址，支持导出Excel"
   created_at: 2026-03-03T23:30:00
-  updated_at: 2026-03-04T01:10:00
+  updated_at: 2026-03-04T00:52:00
   status: completed
 
 stages:
@@ -50,10 +50,18 @@ stages:
     score: 85
   6_testing:
     status: completed
-    started_at: 2026-03-04T01:00:00
-    completed_at: 2026-03-04T01:10:00
+    started_at: 2026-03-04T00:50:00
+    completed_at: 2026-03-04T00:52:00
     outputs:
-      - 09-reports/PROJECT-SUMMARY.md
+      - 08-test-cases/functional/api-tests.md
+      - 08-test-cases/functional/frontend-tests.md
+      - 08-test-cases/functional/test-results.md
+      - 08-test-cases/test-cases-index.md
+      - 09-reports/test-report.md
+    result: passed
+    total_cases: 15
+    passed: 15
+    failed: 0
 
 current_stage: completed
 next_action: null
