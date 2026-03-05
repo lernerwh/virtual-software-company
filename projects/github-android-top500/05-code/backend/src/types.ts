@@ -86,3 +86,68 @@ export interface DataStore {
   repositories: Repository[];
   metadata: Metadata;
 }
+
+/**
+ * 代码统计任务状态
+ */
+export type StatsJobStatus = 'pending' | 'cloning' | 'analyzing' | 'completed' | 'failed';
+
+/**
+ * 代码统计任务
+ */
+export interface StatsJob {
+  id: string;
+  repoId: number;
+  status: StatsJobStatus;
+  progress: number;
+  error?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * 单个语言统计
+ */
+export interface LanguageStats {
+  language: string;
+  files: number;
+  blank: number;
+  comment: number;
+  code: number;
+}
+
+/**
+ * 代码统计结果
+ */
+export interface CodeStats {
+  repoId: number;
+  totalLines: number;
+  codeLines: number;
+  commentLines: number;
+  blankLines: number;
+  languages: LanguageStats[];
+  statsAt: string;
+}
+
+/**
+ * cloc 输出格式（JSON）
+ */
+export interface ClocOutput {
+  [language: string]: {
+    nFiles: number;
+    blank: number;
+    comment: number;
+    code: number;
+  };
+}
+
+/**
+ * 整体统计进度
+ */
+export interface OverallProgress {
+  total: number;
+  completed: number;
+  inProgress: number;
+  pending: number;
+  failed: number;
+}

@@ -6,6 +6,8 @@ import config from './config.js';
 import { getRepositories, getRepoById, getMetadata, getAllRepositories, updateMetadata } from './store.js';
 import { fetchAndroidRepos, needsRefresh, refreshIfNeeded } from './crawler.js';
 import { exportToExcel, generateFilename } from './exporter.js';
+import * as statsController from './controllers/statsController.js';
+import { initTables } from './database/init.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -96,6 +98,119 @@ app.get('/api/export', async (req, res) => {
     res.send(buffer);
   } catch (error: any) {
     res.status(500).json({ error: { message: error.message } });
+  }
+});
+
+// [v1.1.0] 代码统计相关API
+// 触发代码统计
+app.post('/api/repos/:id/stats', async (req, res) => {
+  try {
+    const repoId = parseInt(req.params.id);
+    if (isNaN(repoId) || repoId <= 0) {
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: '无效的仓库ID'
+      });
+    }
+
+    const job = await statsService.triggerStats(repoId);
+    res.status(202).json({
+      jobId: job.id,
+      status: job.status,
+      message: '统计任务已创建'
+    });
+  } catch (error: any) {
+    if (error.message.includes('已有统计任务')) {
+      return res.status(409).json({
+        error: 'Conflict',
+        message: error.message
+      });
+    }
+
+    if (error.message.includes('仓库不存在')) {
+      return res.status(404).json({
+        error: 'Not Found',
+        message: error.message
+      });
+    }
+
+    if (error.message.includes('cloc')) {
+      return res.status(503).json({
+        error: 'Service Unavailable',
+        message: 'cloc 工具未安装',
+        hint: '请运行: brew install cloc 或 sudo apt install cloc'
+      });
+    }
+
+    if (error.message.includes('超时')) {
+      return res.status(408).json({
+        error: 'Request Timeout',
+        message: error.message
+      });
+    }
+
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: '触发代码统计失败'
+    });
+  }
+});
+
+// 获取统计状态
+app.get('/api/repos/:id/stats', (req, res) => {
+  try {
+    const repoId = parseInt(req.params.id);
+    if (isNaN(repoId) || repoId <= 0) {
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: '无效的仓库ID'
+      });
+    }
+
+    const { job, result } = statsService.getStatsStatus(repoId);
+
+    const response: any = {};
+
+    if (job) {
+      response.jobId = job.id;
+      response.status = job.status;
+      response.progress = job.progress;
+
+      if (job.error) {
+        response.error = job.error;
+      }
+    }
+
+    if (result) {
+      response.result = result;
+    }
+
+    if (!job && !result) {
+      return res.status(404).json({
+        error: 'Not Found',
+        message: '该仓库尚未进行代码统计'
+      });
+    }
+
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: '获取统计状态失败'
+    });
+  }
+});
+
+// 获取整体统计进度
+app.get('/api/stats/progress', async (req, res) => {
+  try {
+    const progress = await statsService.getOverallProgress();
+    res.json(progress);
+  } catch (error: any) {
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: '获取统计进度失败'
+    });
   }
 });
 

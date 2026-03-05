@@ -1,17 +1,17 @@
 # 审核状态
 
 project: github-android-top500
-last_review_date: 2026-03-04
-review_id: "001"
+last_review_date: 2026-03-05
+review_id: "002"
 
 # 总体状态
-status: passed  # passed | failed | needs_revision
+status: passed_with_conditions  # passed | failed | needs_revision | passed_with_conditions
 
 # 审核结果摘要
 summary:
-  score: 85
-  passed_count: 18
-  warning_count: 5
+  score: 82
+  passed_count: 22
+  warning_count: 8
   failed_count: 0
 
 # 警告项详情
@@ -51,6 +51,27 @@ warnings:
     status: open
     description: "大数据量导出时无进度反馈"
 
+  - id: W-006
+    title: "数据存储方式不一致"
+    location: "backend/src/repositories/statsRepository.ts"
+    severity: high
+    status: open
+    description: "v1.1.0新增功能使用SQLite，但项目其他部分使用JSON文件存储"
+
+  - id: W-007
+    title: "缺少API权限验证"
+    location: "backend/src/index.ts (stats API)"
+    severity: high
+    status: open
+    description: "统计API缺少访问控制和频率限制"
+
+  - id: W-008
+    title: "前端轮询可能导致内存泄漏"
+    location: "frontend/src/components/StatsButton.tsx"
+    severity: medium
+    status: open
+    description: "setInterval缺少cleanup机制"
+
 # 失败项详情
 failures: []
 
@@ -61,3 +82,11 @@ review_history:
     reviewer: Reviewer Agent
     result: passed
     record_file: review-records/2026-03-04-001.md
+
+  - id: "002"
+    date: 2026-03-05
+    reviewer: Claude (AI Code Reviewer)
+    result: passed_with_conditions
+    record_file: review-records/2026-03-05-001.md
+    version: 1.1.0
+    changes: 代码行数统计功能增量审查

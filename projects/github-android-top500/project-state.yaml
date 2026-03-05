@@ -1,23 +1,36 @@
 # 项目状态文件
 project:
   name: github-android-top500
-  description: "Web网站 - 自动爬取GitHub上star数量Top 500的Android开源项目信息和地址，支持导出Excel"
+  version: 1.1.0
+  description: "Web网站 - 自动爬取GitHub上star数量Top 500的Android开源项目信息和地址，支持导出Excel、代码行数统计"
   created_at: 2026-03-03T23:30:00
-  updated_at: 2026-03-04T00:52:00
-  status: completed
+  updated_at: 2026-03-05T00:00:00
+  status: incremental_update
 
 stages:
   1_requirements:
-    status: completed
+    status: updated
     started_at: 2026-03-03T23:30:00
     completed_at: 2026-03-03T23:35:00
+    updated_at: 2026-03-05T00:00:00
     outputs:
       - 01-requirements/project-spec.md
       - 01-requirements/resource-plan.md
+      - 01-requirements/CHANGELOG.md
+    changes:
+      - type: incremental
+        version: 1.1.0
+        description: 新增代码行数统计功能
+        features:
+          - git 浅拷贝 clone 项目
+          - cloc 工具统计代码行数
+          - Web 界面展示统计进度
+          - 自动清理临时文件
   2_architecture:
     status: completed
     started_at: 2026-03-03T23:35:00
     completed_at: 2026-03-03T23:40:00
+    updated_at: 2026-03-05T00:00:00
     outputs:
       - 02-architecture/software-spec.md
       - 02-architecture/architecture.md
@@ -27,41 +40,86 @@ stages:
     status: completed
     started_at: 2026-03-03T23:40:00
     completed_at: 2026-03-03T23:50:00
+    updated_at: 2026-03-05T00:30:00
     outputs:
       - 04-dt-tests/dt-test-design.md
       - 04-dt-tests/dt-test-cases/
       - 04-dt-tests/test-cases-index.md
+    changes:
+      - type: incremental
+        version: 1.1.0
+        description: 新增代码统计功能的增量测试用例
+        test_files:
+          - backend/statsService.test.ts (25 cases)
+          - backend/statsApi.test.ts (20 cases)
+          - frontend/StatsButton.test.tsx (20 cases)
+          - frontend/StatsProgress.test.tsx (15 cases)
+          - frontend/StatsResult.test.tsx (20 cases)
   4_development:
     status: completed
     started_at: 2026-03-03T23:50:00
     completed_at: 2026-03-04T00:30:00
+    updated_at: 2026-03-05T01:00:00
     outputs:
       - 05-code/backend/
       - 05-code/frontend/
       - 05-code/DEVLOG.md
+    changes:
+      - type: incremental
+        version: 1.1.0
+        description: 实现代码统计功能
+        backend_files:
+          - types.ts (新增统计相关类型)
+          - database/init.ts (新增code_stats和stats_jobs表)
+          - repositories/statsRepository.ts (数据访问层)
+          - services/statsService.ts (核心业务逻辑)
+          - controllers/statsController.ts (HTTP控制器)
+          - index.ts (新增3个API端点)
+        frontend_files:
+          - api/stats.ts (API客户端)
+          - components/StatsButton.tsx (统计按钮组件)
   5_review:
     status: completed
     started_at: 2026-03-04T00:30:00
     completed_at: 2026-03-04T01:00:00
+    updated_at: 2026-03-05T01:30:00
     outputs:
       - 06-reviews/review-status.yaml
       - 06-reviews/review-records/2026-03-04-001.md
-    result: passed
-    score: 85
+      - 06-reviews/review-records/2026-03-05-001.md
+    result: passed_with_conditions
+    score: 82
+    changes:
+      - type: incremental
+        version: 1.1.0
+        description: 代码统计功能代码审查
+        issues:
+          - W-006: 数据存储方式不一致
+          - W-007: 缺少API权限验证
+          - W-008: 前端轮询内存泄漏风险
   6_testing:
     status: completed
     started_at: 2026-03-04T00:50:00
     completed_at: 2026-03-04T00:52:00
+    updated_at: 2026-03-05T02:00:00
     outputs:
       - 08-test-cases/functional/api-tests.md
       - 08-test-cases/functional/frontend-tests.md
       - 08-test-cases/functional/test-results.md
       - 08-test-cases/test-cases-index.md
       - 09-reports/test-report.md
+      - 09-reports/test-report-v1.1.0.md
     result: passed
-    total_cases: 15
-    passed: 15
+    total_cases: 115
+    passed: 113
     failed: 0
 
 current_stage: completed
-next_action: null
+status: completed
+next_stage: null
+next_action: 增量更新v1.1.0已完成，准备发布
+
+current_stage: 6_testing
+status: incremental_update
+next_stage: completed
+next_action: 测试人员执行功能测试和回归测试

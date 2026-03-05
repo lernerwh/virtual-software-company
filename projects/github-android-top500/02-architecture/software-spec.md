@@ -53,6 +53,139 @@
 
 ---
 
+## 📋 架构变更记录 (v1.1.0)
+
+### 变更日期
+2026-03-05
+
+### 变更描述
+新增**代码行数统计模块**，支持对每个项目进行代码行数统计。
+
+### 影响分析
+
+#### 新增模块
+
+**模块 7: 代码统计模块 (Stats)**
+
+**职责**:
+- Git 浅拷贝克隆目标仓库
+- 调用 cloc 工具统计代码行数
+- 管理统计任务队列
+- 自动清理临时文件
+
+**对外接口**:
+```typescript
+interface StatsService {
+  // 触发统计
+  triggerStats(repoId: number): Promise<StatsJob>;
+  // 获取统计状态
+  getStatsStatus(repoId: number): Promise<StatsStatus>;
+  // 获取统计结果
+  getStatsResult(repoId: number): Promise<CodeStats>;
+  // 取消统计
+  cancelStats(repoId: number): Promise<void>;
+}
+
+interface StatsJob {
+  id: string;
+  repoId: number;
+  status: 'pending' | 'cloning' | 'analyzing' | 'completed' | 'failed';
+  progress: number;
+  error?: string;
+}
+
+interface CodeStats {
+  repoId: number;
+  totalLines: number;
+  codeLines: number;
+  commentLines: number;
+  blankLines: number;
+  languages: LanguageStats[];
+  statsAt: string;
+}
+
+interface LanguageStats {
+  language: string;
+  files: number;
+  blank: number;
+  comment: number;
+  code: number;
+}
+```
+
+**依赖模块**: 无
+
+**技术要求**:
+- 需要服务器安装 git 和 cloc 工具
+- 临时目录: `/tmp/cloc-{timestamp}/`
+- 浅拷贝: `git clone --depth 1`
+
+---
+
+#### 受影响模块
+
+| 模块 | 变更内容 | 影响程度 |
+|------|----------|----------|
+| REST API 模块 | 新增 3 个统计相关端点 | 中 |
+| 前端展示模块 | 表格新增操作按钮、进度展示 | 中 |
+| 数据存储模块 | 新增 code_stats 表 | 低 |
+
+#### 新增 API 端点
+
+```
+POST /api/repos/:id/stats     - 触发代码统计
+GET  /api/repos/:id/stats     - 获取统计状态和结果
+GET  /api/stats/progress      - 获取整体统计进度
+```
+
+#### 数据库变更
+
+```sql
+-- 新增 code_stats 表
+CREATE TABLE code_stats (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  repo_id INTEGER NOT NULL UNIQUE,
+  total_lines INTEGER DEFAULT 0,
+  code_lines INTEGER DEFAULT 0,
+  comment_lines INTEGER DEFAULT 0,
+  blank_lines INTEGER DEFAULT 0,
+  languages_json TEXT,
+  stats_at DATETIME,
+  FOREIGN KEY (repo_id) REFERENCES repos(id)
+);
+
+-- 新增 stats_jobs 表（可选，用于队列管理）
+CREATE TABLE stats_jobs (
+  id TEXT PRIMARY KEY,
+  repo_id INTEGER NOT NULL,
+  status TEXT DEFAULT 'pending',
+  progress INTEGER DEFAULT 0,
+  error TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### 前端组件变更
+
+新增组件:
+- `StatsButton` - 统计触发按钮
+- `StatsProgress` - 统计进度展示
+- `StatsResult` - 统计结果展示
+
+修改组件:
+- `RepoTable` - 添加统计操作列
+
+---
+
+### 兼容性保证
+
+- 现有 API 保持不变
+- 新增功能为可选特性
+- cloc 工具未安装时优雅降级
+
+---
+
 ## 模块划分
 
 ### 模块 1: 数据爬取模块 (Crawler)

@@ -70,6 +70,42 @@ export function initTables(): void {
     );
   `);
 
+  // [v1.1.0] 创建code_stats表
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS code_stats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      repo_id INTEGER NOT NULL UNIQUE,
+      total_lines INTEGER DEFAULT 0,
+      code_lines INTEGER DEFAULT 0,
+      comment_lines INTEGER DEFAULT 0,
+      blank_lines INTEGER DEFAULT 0,
+      languages_json TEXT,
+      stats_at TEXT,
+      FOREIGN KEY (repo_id) REFERENCES repositories(id)
+    );
+  `);
+
+  // [v1.1.0] 创建stats_jobs表
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS stats_jobs (
+      id TEXT PRIMARY KEY,
+      repo_id INTEGER NOT NULL,
+      status TEXT DEFAULT 'pending',
+      progress INTEGER DEFAULT 0,
+      error TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (repo_id) REFERENCES repositories(id)
+    );
+  `);
+
+  // [v1.1.0] 创建索引
+  database.exec(`
+    CREATE INDEX IF NOT EXISTS idx_code_stats_repo_id ON code_stats(repo_id);
+    CREATE INDEX IF NOT EXISTS idx_stats_jobs_repo_id ON stats_jobs(repo_id);
+    CREATE INDEX IF NOT EXISTS idx_stats_jobs_status ON stats_jobs(status);
+  `);
+
   logger.info('Database tables initialized');
 }
 
